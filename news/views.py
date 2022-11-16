@@ -1,6 +1,11 @@
 from django.shortcuts import render
-
+from rest_framework import generics
 from .models import News
+from .serializer import NewsSerializer
+
+class NewsAPIView(generics.ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
 
 # Create your views here.
 def index(request):
