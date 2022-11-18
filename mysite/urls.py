@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from news.views import NewsAPIView
 from mysite import settings
-
 from django.views.static import serve as mediaserve
 from django.urls import re_path
 
@@ -29,7 +28,10 @@ urlpatterns = [
 ] 
 
 if settings.DEBUG:
-    a = ""
+    urlpatterns += [
+        re_path(f'^{settings.MEDIA_URL.lstrip("/")}(?P<path>.*)$', 
+        mediaserve, {'document_root':settings.MEDIA_ROOT})
+    ]
 else:
     urlpatterns += [
         re_path(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*)$',
