@@ -1,0 +1,33 @@
+{% extends 'news/base.html' %}
+{% load news_tags %}
+
+{% block content %}
+<h1 class="m-2">{{ title }}</h1>
+<nav class="nav nav-pills p-2">
+    {% if not cat_selected %}
+        <a class="nav-link active">Все категории</a>
+    {% else %}
+        <a class="nav-link" href="{% url 'news' %}">Все категории</a>
+    {% endif %}
+    
+    {% show_cats cat_selected %}
+</nav>
+
+<div class="card m-2 p-2">
+    {% if post.photo %}
+    <img src="{{ post.photo.url }}" style="width: 240px;" alt="">
+    {% endif %}
+    <p>{{ post.content}}</p>
+    <p>{{ post.created_at }}</p>
+    <p>{{ post.category }}</p>
+
+    {% if post.id_published %}
+        <p>Опубликовано</p>
+    {% else %}
+        <p>Не опубликовано</p>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}

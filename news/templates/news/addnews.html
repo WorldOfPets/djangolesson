@@ -1,0 +1,28 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+
+<div class="container-xxl">
+    <h1 class="m-2">{{ title }}</h1>
+    <div class="row">
+        <div class="col-12 col-md-8  p-3">
+            <form action="{% url 'addnews' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for item in form %}
+                    <p><label class="form-label" for="{{ item.id_for_label }}">{{ item.label}}: </label>
+                        {{item}}
+                    </p>
+                    {% if item.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ item.errors }}
+                        </div>
+                    {% endif %}
+                {% endfor%}
+                
+                <button class="btn btn-primary" type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

@@ -1,21 +1,20 @@
 {% extends 'news/base.html' %}
+{% load news_tags %}
 
 {% block content %}
 <h1 class="m-2">{{ title }}</h1>
-<div class="container-fluid">
-    <div class="row">
-        {% for item in news %}
-        <div class="col-12 col-sm-6 col-md-4" style="cursor: pointer;">
-            <div class="card m-2 p-2" >
-                <a href="{{ item.get_absolute_url }}" style="text-decoration: none; color: black;">
-                    <h5 class="card-title">{{item.title}}</h5>
-                    <p class="card-text">{{item.content}}</p>
-                </a>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+<nav class="nav nav-pills p-2">
+{% if cat_selected == None %}
+    <a class="nav-link active">Все категории</a>
+{% else %}
+    <a class="nav-link" href="{% url 'news' %}">Все категории</a>
+{% endif %}
+
+{% show_cats cat_selected %}
+
+</nav>
+
+{% show_news cat_selected %}
 
 {% endblock %}
     

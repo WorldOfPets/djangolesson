@@ -3,24 +3,29 @@ from django.urls import reverse
 
 # Create your models here.
 class Categories(models.Model):
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL' )
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'cats_id':self.slug})
 
     def __str__(self) -> str:
         return self.title
 class News(models.Model):
     title = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     content = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     photo = models.ImageField(upload_to='photos/%Y/%m/%d', blank=True)
     id_published = models.BooleanField(default=True)
-    category = models.ForeignKey(Categories, on_delete=models.PROTECT, default=1)
+    category = models.ForeignKey(Categories, on_delete=models.PROTECT)
 
     def __str__(self) -> str:
         return self.title
-
+     
     def get_absolute_url(self):
-        return reverse('newsid', kwargs={'news_id':self.pk})
+        return reverse('newsid', kwargs={'news_id':self.slug})
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
