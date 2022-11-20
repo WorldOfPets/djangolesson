@@ -1,6 +1,8 @@
 from django import forms
 from django.forms import ValidationError
 from .models import *
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import CustomUser
 
 class AddPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -23,6 +25,18 @@ class AddPostForm(forms.ModelForm):
         if len(title) < 3:
             raise ValidationError("Название новости слишком короткое")
         return title
+class AuthenticationUserForm(AuthenticationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'password')
+class RegisterUserForm(UserCreationForm):
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'login'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    email = forms.CharField(label='Email', widget=forms.EmailInput(attrs={'class':'form-control', 'placeholder':'name@example.com'}))
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email', 'password1', 'password2', 'gender', 'birth_date')
     # title = forms.CharField(max_length=150, label="Заголовок",
     #     widget=forms.TextInput(attrs={'class':'form-control'}))
     # slug = forms.SlugField(max_length=255, 

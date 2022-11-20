@@ -1,7 +1,16 @@
 from django.db import models
 from django.urls import reverse
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
+
+class CustomUser(AbstractUser):
+    GENDERS = (
+        ('m', 'Мужчина'),
+        ('f', 'Женщина'),
+    )
+    gender = models.CharField('Пол', max_length=1, choices=GENDERS, default='')
+    birth_date = models.DateField('Дата рождения', default='2000-09-12')
+    
 class Categories(models.Model):
     title = models.CharField(max_length=150, db_index=True)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL' )

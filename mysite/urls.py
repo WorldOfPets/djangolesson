@@ -16,24 +16,34 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from news.views import NewsAPIView
+from news.views import *
 from mysite import settings
 from django.views.static import serve as mediaserve
 from django.urls import re_path
+from news.views import pageNotFound
+from rest_framework import routers
+
+router = routers.SimpleRouter()
+router.register(r'news', NewsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('news.urls')),
-    path('api/v1/newslist/', NewsAPIView.as_view())
+    path('api/v1/', include(router.urls))
+    # path('api/v1/newslist/', NewsApiCreateList.as_view()),
+    # path('api/v1/newslist/<int:pk>/', NewAPIRUD.as_view())
 ] 
 
 if settings.DEBUG:
     urlpatterns += [
         re_path(f'^{settings.MEDIA_URL.lstrip("/")}(?P<path>.*)$', 
-        mediaserve, {'document_root':settings.MEDIA_ROOT})
+        mediaserve, {'document_root':settings.MEDIA_ROOT}),
+        path('__debug__/', include('debug_toolbar.urls')),
     ]
 else:
     urlpatterns += [
         re_path(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*)$',
         mediaserve, {'document_root': settings.STATIC_ROOT}),
     ]
+
+handler404 = pageNotFound

@@ -1,0 +1,20 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    <form method="post" class="p-3">
+        {% csrf_token %}
+        {% for item in form %}
+            <p><label class="form-label" for="{{ item.id_for_label }}">{{ item.label}}: </label>
+                {{item}}
+            </p>
+            {% if item.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ item.errors }}
+                </div>
+            {% endif %}
+        {% endfor%}
+        <button type="submit" class="btn btn-success">Регистрация</button>
+    </form>
+{% endblock %}

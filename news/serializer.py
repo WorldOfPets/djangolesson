@@ -4,4 +4,9 @@ from .models import News
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
-        fields = ('title', 'content', 'category')
+        fields = ('title', 'content', 'slug', 'category')
+    
+    def validate(self, attrs):
+        if len(attrs['title']) < 3:
+            raise serializers.ValidationError("So short name for title")
+        return attrs

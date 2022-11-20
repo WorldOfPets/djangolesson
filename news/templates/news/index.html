@@ -1,5 +1,4 @@
 {% extends 'news/base.html' %}
-{% load news_tags %}
 
 {% block content %}
 <h1 class="m-2">{{ title }}</h1>
@@ -9,12 +8,87 @@
 {% else %}
     <a class="nav-link" href="{% url 'news' %}">Все категории</a>
 {% endif %}
-
-{% show_cats cat_selected %}
-
+{% load cache %}
+{% cache 1800 sidebar %}
+{% for item in cats %}
+    {% if item.news__count > 0 %}
+    
+    {% if item.slug == cat_selected %}
+        <a class="nav-link active">{{item.title}}</a>
+    {% else %}
+        <a class="nav-link" href="{{ item.get_absolute_url }}">{{item.title}}</a>
+    {% endif %}
+    {% endif%}
+{% endfor %}
+{% endcache %}
 </nav>
 
-{% show_news cat_selected %}
+<div class="container-fluid">
+    <div class="row">
+        {% for item in news %}
+        <div class="col-12 col-sm-6 col-md-4" style="cursor: pointer;">
+            <div class="card m-2 p-2" >
+                <a href="{{ item.get_absolute_url }}" style="text-decoration: none; color: black;">
+                    {% if item.photo %}
+                        <img src="{{ item.photo.url }}" style="width: 140px; height: 120px;" alt="">
+                    {% endif %}
+                    <h5 class="card-title">{{item.title}}</h5>
+                    <p class="card-text">{{item.content|truncatewords:20}}</p>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination m-3">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+    {% endif %}
+
+
+      {% for item in paginator.page_range %}
+        {% if page_obj.number == item %}
+        <li class="page-item active">
+            <a class="page-link" >{{ item }}</a>
+        </li>
+        {% elif item >= page_obj.number|add:-2 and item <= page_obj.number|add:2 %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ item }}">{{ item }}</a>
+        </li>
+        {% endif%}
+        
+        
+    {% endfor%}
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+      
+    </ul>
+  </nav>
+{% endif %}
 {% endblock %}
     
