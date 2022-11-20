@@ -25,6 +25,19 @@ menu = [
 class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
+    def perform_create(self, serializer):
+        print(self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        print(request.user.pk)
+        return super().retrieve(request, *args, **kwargs)
+    
+    def list(self, request, *args, **kwargs):
+        print(request.user)
+        return super().list(request, *args, **kwargs)
+
+    
+    
     #permission_classes = (IsAdminUser, )
 # class NewsApiCreateList(generics.ListCreateAPIView):
 #     queryset = News.objects.all()
